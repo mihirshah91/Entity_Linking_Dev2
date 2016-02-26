@@ -3,7 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
 
-
+//test
 public class LoadParameters {
 	public static HashMap<String,String> params = new HashMap<String, String>(); 
 	public static void readParameters(String paramsFilePath) throws Exception{
