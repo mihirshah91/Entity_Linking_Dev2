@@ -1,0 +1,8 @@
+input_title_folder=/Users/mihir/Documents/MEng folder new/MEng Project/EntityLinking/Project/ecfr/stages/definitions/title9
+database=Mesh
+output_folder=/Users/mihir/Documents/MEng folder new/MEng Project/EntityLinking/Project/ecfr/stages/linkedEntities
+output_rdf=/Users/mihir/Documents/MEng folder new/MEng Project/EntityLinking/Project/rdf
+max_thread=8
+mesh_ontology=/Users/mihir/Documents/MEng folder new/MEng Project/EntityLinking/Project/ontologies/Mesh/desc2015.xml
+drugbank_ontology=/Users/mihir/Documents/MEng folder new/MEng Project/EntityLinking/Project/ontologies/Drugbank/drugbank_dump.nt
+agrovoc_ontology=/Users/mihir/Documents/MEng folder new/MEng Project/EntityLinking/Project/ontologies/Agrovoc/agrovoc_en.rdf
