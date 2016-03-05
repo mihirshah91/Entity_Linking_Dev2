@@ -31,6 +31,13 @@ public class XMLParser {
 	 * @param intermediateFile
 	 * @param entityToLinkMap
 	 */
+	
+	public static int pTagssize;
+	public static int extractTagsSize;
+	public static int tableTagsSize;
+	
+	
+	
 	public static void postProcess(File intermediateFile,HashMap<String, String> entityToLinkMap, String outputTitleFolder){
 		try{
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory
@@ -38,6 +45,8 @@ public class XMLParser {
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		
 		Document doc = docBuilder.parse(intermediateFile);
+		
+		
 		
 		Transformer tf = TransformerFactory.newInstance().newTransformer();
         tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
@@ -83,8 +92,18 @@ public class XMLParser {
 
 				// Retrieve all the p tags under the current section element
 				NodeList pTags = eElement.getElementsByTagName("p");
+				NodeList extractTags = eElement.getElementsByTagName("extract");
+				NodeList tableTags = eElement.getElementsByTagName("table");
+
+				pTagssize = pTags.getLength();
+				extractTagsSize = extractTags.getLength();
+				tableTagsSize = tableTags.getLength();
+				
+				
 				
 				int pTagIndex = 0;
+				//int extractTagIndex=0;
+				
 				while (pTagIndex < pTags.getLength()) {
 					
 					/* To avoid crossing the boundaries of "definiendum" tags */
@@ -116,7 +135,33 @@ public class XMLParser {
 					paraMap.put(pTagIndex, buffer.toString());
 					pTagIndex++;
 				}
-				sectionIndex++;
+				
+				
+				//similar for extract tags
+				for(int i=0; i < extractTags.getLength();i++) {
+					
+					
+					
+					StringBuffer buffer = new StringBuffer();
+					buffer.append(extractTags.item(i).getTextContent());
+					paraMap.put(pTagIndex, buffer.toString());
+					pTagIndex++;
+				}
+			
+				//similar for extract table tags
+				
+				for(int i=0; i < tableTags.getLength();i++) {
+					
+					
+					
+					StringBuffer buffer = new StringBuffer();
+					buffer.append(tableTags.item(i).getTextContent());
+					paraMap.put(pTagIndex, buffer.toString());
+					pTagIndex++;
+				}
+				
+				
+			sectionIndex++;
 			}
 			
 			List<LinkingThread> workerThreads = new ArrayList<LinkingThread>();

@@ -30,6 +30,8 @@ public class Controller {
 	public final static String LIICORNELL_MESH = "<http://id.nlm.nih.gov/mesh/";
 	public final static String LLICORNELL_AGROVOC = "";
 	public static Integer pIndex = 0;
+	public static Integer exIndex;
+	public static Integer tableIndex;
 	
 	public static void main(String args[]) throws Exception {
 		
@@ -113,6 +115,14 @@ public class Controller {
 			// Returns a map of entities and their links
 			XMLParser.xmlRead(files[i],titleId,sectionId, database);
 			
+			exIndex = XMLParser.pTagssize;
+			tableIndex= XMLParser.pTagssize + XMLParser.extractTagsSize;
+			
+			
+			System.out.println("number of ptags" + XMLParser.pTagssize);
+			System.out.println("number of extract tags: " + XMLParser.extractTagsSize);
+			System.out.println("number of table tags: " + XMLParser.tableTagsSize);
+			
 			//Files from title folder
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(files[i]),"UTF8"));
 			// The marked up xml	
@@ -124,10 +134,44 @@ public class Controller {
 			
 			String line = null;
 			System.out.println("Started to write new file...");
+			boolean eflag=false ; // flag for not ignoring lines within extract tags
+			boolean tflag =false; // flag for not ignoring lines within table tags
 			//System.out.println(entityToLinkMap.size());
-			while ((line = reader.readLine()) != null) {				
-				   if (!line.contains("<head>") && !line.contains("<origin") && line.contains("<p")) {
-				       ArrayList<String> toTag = paragraphEntities.get(pIndex);
+			while ((line = reader.readLine()) != null) {	
+				
+				
+				   if ( (!line.contains("<head>") && !line.contains("<origin"))  && (line.contains("<p") || line.contains("<extract") || line.contains("<table") || eflag || tflag  ) ) {
+				    
+					   ArrayList<String> toTag = new ArrayList<String>();
+						if (line.contains("<extract"))
+
+						{
+							eflag = true;
+							
+
+						} else if (line.contains("<table")) {
+							tflag = true;
+							
+						} 
+							
+
+						if (line.contains("</extract>")) {
+							eflag = false;
+							exIndex++;
+						} else if (line.contains("</table>")) {
+							tflag = false;
+							tableIndex++;
+						}
+						
+						
+						if(eflag)
+							toTag=paragraphEntities.get(exIndex);
+						else if(tflag)
+							toTag=paragraphEntities.get(tableIndex);
+						else
+							toTag=paragraphEntities.get(pIndex++);
+						
+					   
 				       //System.out.println(toTag);
 				       
 					   if(toTag!=null){
@@ -194,7 +238,7 @@ public class Controller {
 							   }
 						   }
 					   }
-					   pIndex++;   
+					  // pIndex++;   
 				   }
 				   out.write(line+"\n");
 				   out.flush();
