@@ -35,6 +35,8 @@ public class Controller {
 	
 	public static void main(String args[]) throws Exception {
 		
+		long startTime = System.currentTimeMillis();
+		
 		if(args.length == 0){
 			System.out.println("Please provide parameters file path");
 			System.exit(0);
@@ -263,6 +265,15 @@ public class Controller {
 		tripletsWriter.close();
 		System.out.println();
 		System.out.println("Done. Please check "+LoadParameters.params.get("output_folder")+" folder for output.");
+		
+		long stopTime = System.currentTimeMillis();
+		System.out.println("stop time is " + stopTime);
+		long elapsedTime = stopTime - startTime;
+		
+		 System.out.println("Time required in secons is : " + elapsedTime/1000.0);
+		
+		
+		
 	}
 	
 	
