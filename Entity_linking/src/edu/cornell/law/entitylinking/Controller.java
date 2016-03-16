@@ -138,9 +138,17 @@ public class Controller {
 			System.out.println("Started to write new file...");
 			boolean eflag=false ; // flag for not ignoring lines within extract tags
 			boolean tflag =false; // flag for not ignoring lines within table tags
+			boolean pflag =false;
 			//System.out.println(entityToLinkMap.size());
+			int line_number = 0;
+			
 			while ((line = reader.readLine()) != null) {	
 				
+				line_number++;
+				if(line_number == 38)
+				{
+					System.out.println("here");
+				}
 				
 				   if ( (!line.contains("<head>") && !line.contains("<origin"))  && (line.contains("<p") || line.contains("<extract") || line.contains("<table") || eflag || tflag  ) ) {
 				    
@@ -155,14 +163,22 @@ public class Controller {
 							tflag = true;
 							
 						} 
+						else if(line.contains("<p"))
+						{
+							toTag=paragraphEntities.get(pIndex++);
+							
+						}
 							
 
 						if (line.contains("</extract>")) {
 							eflag = false;
 							exIndex++;
-						} else if (line.contains("</table>")) {
+							
+						} 
+						else if (line.contains("</table>")) {
 							tflag = false;
 							tableIndex++;
+							
 						}
 						
 						
@@ -170,14 +186,17 @@ public class Controller {
 							toTag=paragraphEntities.get(exIndex);
 						else if(tflag)
 							toTag=paragraphEntities.get(tableIndex);
-						else
-							toTag=paragraphEntities.get(pIndex++);
+					
+							
 						
 					   
 				       //System.out.println(toTag);
 				       
 					   if(toTag!=null){
 						   for (String tagMe : toTag) {
+							   
+							   if(line.contains(tagMe))
+							   {
 							   if(entityToLinkMap.containsKey(tagMe.toLowerCase())){
 								   String patternString = "\\b"+tagMe+"\\b";
 							       Pattern pattern = Pattern.compile(patternString);
@@ -238,6 +257,7 @@ public class Controller {
 
 								   									
 							   }
+							  }
 						   }
 					   }
 					  // pIndex++;   
