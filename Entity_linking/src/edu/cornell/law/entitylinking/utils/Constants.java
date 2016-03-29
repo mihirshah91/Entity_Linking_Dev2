@@ -22,12 +22,15 @@ public interface Constants {
 			+"PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>" + "\n";
 	
 	public String skosScopeNoteTerm = "scopeNote";
-	
+	public String skosBroaderTerm = "broader";
+	public String skosNarrowerTerm = "narrower";
 	public String selectTerm = "output";
 	
 	public String regexScope = "\\<(.*?)\\>";
 	
-	public String AGROVOCURL =  "{ <http://aims.fao.org/aos/agrovoc/c_";
-			
+	public String AGROVOCURL =  " <http://aims.fao.org/aos/agrovoc/c_";
+	
+	
+	
 	
 }
