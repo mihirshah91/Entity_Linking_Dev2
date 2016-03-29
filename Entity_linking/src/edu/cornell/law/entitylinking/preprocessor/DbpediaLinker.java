@@ -76,7 +76,7 @@ public class DbpediaLinker {
     finally { qexec.close(); System.out.println("Number of httpExceptions is"+httpExceptions);}
 
       
-      
+      System.out.println("Disambiguation best uri for label " + label + " is " + bestUri);
       
       return bestUri;
   }

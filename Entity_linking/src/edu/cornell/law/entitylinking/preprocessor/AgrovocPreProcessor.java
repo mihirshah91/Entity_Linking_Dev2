@@ -1,7 +1,5 @@
 package edu.cornell.law.entitylinking.preprocessor;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.Map;
 import java.util.TreeMap;
 
