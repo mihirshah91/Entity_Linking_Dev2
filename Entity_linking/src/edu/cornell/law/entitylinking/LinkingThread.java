@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import edu.cornell.law.entitylinking.preprocessor.AgrovocLinker;
 import edu.cornell.law.entitylinking.preprocessor.AgrovocPreProcessor;
 import edu.cornell.law.entitylinking.preprocessor.DbpediaLinker;
 import edu.cornell.law.entitylinking.preprocessor.DrugbankPreProcessor;
@@ -170,6 +171,7 @@ class LinkingThread extends Thread{
     
     			// Actual entities which have a valid meaning in Ontology, to be linked in the paragraph
     			ArrayList<String> actualEntities = new ArrayList<String>();
+    			HashSet<String> context = getContext(entry.getValue());
     			
     			// Loop through the list of potential entity words in the paragraph and find a match in Ontology map 
     			for (String s : potentialEntities) {
@@ -184,14 +186,25 @@ class LinkingThread extends Thread{
     				if(crossBoundary)
     					continue;
     				
-    				if (databaseMap.containsKey(sLower)) {
+    				String uri =null;
+    				
+    				if(database.equals("Agrovoc"))
+    					uri = AgrovocLinker.getAgrovocLinkDisambiguate(sLower, context);
+    				
+    				if(uri==null)
+    				{
+    					if(databaseMap.containsKey(sLower))
+    						uri = databaseMap.get(sLower);
+    				}
+    				
+    				if (uri!=null) {
     				  
     					String output = null; 
     					if (!entityToLinkMap.containsKey(sLower)) {								
-    						output = databaseMap.get(sLower);
+    						
     						if (!actualEntities.contains(s))
     							actualEntities.add(s);
-    						entityToLinkMap.put(sLower,output);
+    						entityToLinkMap.put(sLower,uri);
     					}
     					else {
     						if (!actualEntities.contains(s))
@@ -201,13 +214,27 @@ class LinkingThread extends Thread{
     				else {
     					List<String> singleWordEntities = Utility.findPOSTags(s);
     					for (String w : singleWordEntities) {
-    						if (databaseMap.containsKey(w.toLowerCase())) {
-    							String output = null; 
+    						
+    						String urinew =null;
+    						
+    						if(database.equals("Agrovoc"))
+    	    					urinew = AgrovocLinker.getAgrovocLinkDisambiguate(w.toLowerCase(), context);
+    	    				
+    	    				if(urinew==null)
+    	    				{
+    	    					if(databaseMap.containsKey(w.toLowerCase()))
+    	    						urinew = databaseMap.get(w.toLowerCase());
+    	    				}
+    	    				
+    						
+    						
+    	    				if (urinew!=null) {
+    							
     							if (!entityToLinkMap.containsKey(w.toLowerCase())) {								
-    								output = databaseMap.get(w.toLowerCase());
+    								
     								if (!actualEntities.contains(w))
     									actualEntities.add(w);
-    								entityToLinkMap.put(w.toLowerCase(),output);
+    								entityToLinkMap.put(w.toLowerCase(),urinew);
     							}
     							else {
     								if (!actualEntities.contains(w))
@@ -217,12 +244,20 @@ class LinkingThread extends Thread{
     					}
     					
     				}
+    				
     			}
     			paragraphEntitiesMap.put(paraIndex, actualEntities);
     		}		
 			 
 			
     	}
+	}
+	
+	
+	public HashSet<String> getContext(String content)
+	{
+		HashSet<String> sampleContext= DbpediaLinker.extractContentWords(content);
+		return sampleContext; 
 	}
 	
 	

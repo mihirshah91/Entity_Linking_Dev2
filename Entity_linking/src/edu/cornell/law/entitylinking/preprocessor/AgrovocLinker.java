@@ -25,12 +25,13 @@ public static String getAgrovocLinkDisambiguate(String label, HashSet<String> co
 	{
 		
 	 QueryExecution qexec = null;
-	 Map<String,List<String>> entityToLanguageMap = new HashMap<>();
+	 Map<String,HashSet<String>> entityToLanguageMap = new HashMap<>();
 		
 	 
 	// query no.1 to get the entity url 
 	String sparqlquery = Constants.prefixTextAgrovoc + "SELECT ?" + Constants.selectTerm + " WHERE { ?" + Constants.selectTerm + " skos:prefLabel \"" +   label +   "\" @en .}" ;
 	List<String> list = executeQuery(sparqlquery,Constants.Agrovoc_EndPoint);
+	
 	
 	for( String mainEntityUri :list)
 	{
@@ -70,12 +71,39 @@ public static String getAgrovocLinkDisambiguate(String label, HashSet<String> co
 			buildMap(tempscope,narrowerentityid,entityToLanguageMap,false);
 	}
 	
-	System.out.println(entityToLanguageMap);
+	
 	}
-	return "";	
+	
+	System.out.println(entityToLanguageMap);
+	String uri = performWSD(entityToLanguageMap, context);
+	//System.out.println("uri=" + uri);
+	
+	return uri;	
 		
 	
 	}
+
+public static String performWSD( Map<String,HashSet<String>> entityToLanguageMap, HashSet<String> context)
+{
+	int maxScore = Integer.MIN_VALUE;
+	String uri = null;
+			
+	for(Map.Entry<String, HashSet<String>> temp: entityToLanguageMap.entrySet())
+	{
+		String id = temp.getKey();
+		HashSet<String> presentContext = temp.getValue();
+		presentContext.retainAll(context);
+		int score = presentContext.size();
+		if(score > maxScore)
+		{
+			maxScore = score;
+			uri = id;
+		}
+		
+    }
+	return uri;
+}
+
 
 public static List<String> executeQueryUtil(String uri, boolean filterFlag, String term )
 {
@@ -85,12 +113,14 @@ public static List<String> executeQueryUtil(String uri, boolean filterFlag, Stri
 }
 
 
-public static void buildMap(String scope,String entityid, Map<String,List<String>> entityToLanguageMap, boolean deepCheckFlag)
+public static void buildMap(String scope,String entityid, Map<String,HashSet<String>> entityToLanguageMap, boolean deepCheckFlag)
 {
-	 entityToLanguageMap.put(entityid, formList(scope));
+	 
 	 String sparqlScopeQuery = "";
 	 Pattern pattern = Pattern.compile(Constants.regexScope);
 	 Matcher matcher = pattern.matcher(scope);
+	 if(matcher.groupCount()==0)
+		 entityToLanguageMap.put(entityid, formList(scope));
 	 
 	 while(matcher.find() && deepCheckFlag)
 	 {
@@ -114,18 +144,17 @@ public static String extractId(String uri)
 {
 	int index = uri.lastIndexOf("c_");
 	String sub = uri.substring(index,uri.length());
-	System.out.println("sub=" + sub);
+	//ystem.out.println("sub=" + sub);
 	return sub;
 	
 }
 
 
-public static List<String> formList(String scope)
+public static HashSet<String> formList(String scope)
 {
-	System.out.println("scope=" + scope);
-	String split[] = scope.split("\\s");
-	List<String> list = Arrays.asList(split);
-	return list;
+	scope = scope.replaceAll("@en", "");
+	HashSet<String> set = DbpediaLinker.extractContentWords(scope);
+	return set;
 	
 	
 }
@@ -171,11 +200,11 @@ public static String giveSelectClause(String label, String skosTerm, boolean fil
 }
 
 
-public static void main(String args[])
+/*public static void main(String args[])
 {
-	getAgrovocLinkDisambiguate("banks", new HashSet<String>(Arrays.asList("mihir","hello world")));
+	getAgrovocLinkDisambiguate("absorption", new HashSet<String>(Arrays.asList("mihir","hello world")));
 	
-}
+}*/
 	
 	
 }
