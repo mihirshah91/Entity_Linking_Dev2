@@ -1,0 +1,25 @@
+linkedEntity {
+	color : green;
+}
+linkedEntity:hover {
+	background-color : yellow;
+}
+
+#overlay{ /* we set all of the properties for are overlay */
+    height:80%;
+    width:80%;
+    margin:0 auto;
+    background:white;
+    color:black;
+    padding:10px;
+    position:absolute;
+    top:5%;
+    left:10%;
+    z-index:1000;
+    display:none;
+    /* CSS 3 */
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    -o-border-radius:10px;
+    border-radius:10px;
+}

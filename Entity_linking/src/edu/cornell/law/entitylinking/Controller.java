@@ -240,10 +240,18 @@ public class Controller {
 											    + tagMe + "</linkedEntity>");													
 								   }
 								   else if(database.equals("Agrovoc")) {
-									   line = matcher.replaceAll("<linkedEntity src=\"Agrovoc\" identifier=\"Entity:" 
-												+ entityToLinkMap.get(tagMe.toLowerCase()).substring(entityToLinkMap.get(tagMe.toLowerCase()).indexOf("#")+1,entityToLinkMap.get(tagMe.toLowerCase()).length()) + "\" "
-											    + "occur=\""+occur+"\">"
-											    + tagMe + "</linkedEntity>");													
+									   if(!entityToLinkMap.get(tagMe.toLowerCase()).contains("dbpedia")){
+										   line = matcher.replaceAll("<linkedEntity src=\"Agrovoc\" identifier=\"Entity:" 
+													+ entityToLinkMap.get(tagMe.toLowerCase()).substring(entityToLinkMap.get(tagMe.toLowerCase()).indexOf("#")+1,entityToLinkMap.get(tagMe.toLowerCase()).length()) + "\" "
+												    + "occur=\""+occur+"\">"
+												    + tagMe + "</linkedEntity>");
+									   }
+									   else{
+										   line = matcher.replaceAll("<linkedEntity src=\"Agrovoc\" identifier=\"Entity:" 
+													+ entityToLinkMap.get(tagMe.toLowerCase()) + "\" "
+												    + "occur=\""+occur+"\">"
+												    + tagMe + "</linkedEntity>");
+									   }
 								   }
 								   else if(database.equals("Dbpedia")) {
 								     //System.out.println("Im here!");

@@ -1,0 +1,6 @@
+linkedEntity {
+	color : green;
+}
+linkedEntity:hover {
+	background-color : yellow;
+}

@@ -25,7 +25,7 @@ public class DbpediaLinker {
       try {
       String sparqlQueryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"  +
                                   "\n" + 
-                                  "select distinct ?dis ?abs ?comment where {" + 
+                                  "select distinct ?s ?dis ?abs ?comment where {" + 
                                   "\n" +
                                   "?s rdfs:label \""+label+"\"@en . "+
                                   "\n" +
