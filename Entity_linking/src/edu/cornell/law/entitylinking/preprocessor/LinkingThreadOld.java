@@ -1,4 +1,4 @@
-package edu.cornell.law.entitylinking;
+package edu.cornell.law.entitylinking.preprocessor;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -18,7 +18,7 @@ import edu.cornell.law.entitylinking.preprocessor.MeshPreProcessor;
 import edu.cornell.law.entitylinking.utils.LoadParameters;
 import edu.cornell.law.entitylinking.utils.Utility;
 
-class LinkingThreadNew extends Thread{
+class LinkingThreadOld extends Thread{
 	ConcurrentHashMap<String, String> entityToLinkMap = new ConcurrentHashMap<String, String>();
 	HashMap<Integer, ArrayList<String>> paragraphEntitiesMap = new HashMap<Integer, ArrayList<String>>();
 	HashMap<Integer, String> queryMap;
@@ -34,7 +34,7 @@ class LinkingThreadNew extends Thread{
 		return paragraphEntitiesMap;	
 	}
 	
-	public LinkingThreadNew(String threadId,HashMap<Integer, String> queryMap, String database, HashSet<String> entitiesToBeRemoved){
+	public LinkingThreadOld(String threadId,HashMap<Integer, String> queryMap, String database, HashSet<String> entitiesToBeRemoved){
 		this.threadId = threadId;
 		this.queryMap = queryMap;
 		this.database = database;
@@ -184,7 +184,39 @@ class LinkingThreadNew extends Thread{
     				if(crossBoundary)
     					continue;
     				
-    				
+    				if (databaseMap.containsKey(sLower)) {
+    				  
+    					String output = null; 
+    					if (!entityToLinkMap.containsKey(sLower)) {								
+    						output = databaseMap.get(sLower);
+    						if (!actualEntities.contains(s))
+    							actualEntities.add(s);
+    						entityToLinkMap.put(sLower,output);
+    					}
+    					else {
+    						if (!actualEntities.contains(s))
+    							actualEntities.add(s);
+    					}
+    				}
+    				else {
+    					List<String> singleWordEntities = Utility.findPOSTags(s);
+    					for (String w : singleWordEntities) {
+    						if (databaseMap.containsKey(w.toLowerCase())) {
+    							String output = null; 
+    							if (!entityToLinkMap.containsKey(w.toLowerCase())) {								
+    								output = databaseMap.get(w.toLowerCase());
+    								if (!actualEntities.contains(w))
+    									actualEntities.add(w);
+    								entityToLinkMap.put(w.toLowerCase(),output);
+    							}
+    							else {
+    								if (!actualEntities.contains(w))
+    									actualEntities.add(w);
+    							}
+    						}
+    					}
+    					
+    				}
     			}
     			paragraphEntitiesMap.put(paraIndex, actualEntities);
     		}		
