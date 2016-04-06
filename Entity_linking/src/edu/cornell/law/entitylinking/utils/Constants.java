@@ -24,6 +24,7 @@ public interface Constants {
 	public String skosScopeNoteTerm = "scopeNote";
 	public String skosBroaderTerm = "broader";
 	public String skosNarrowerTerm = "narrower";
+	public String skosCloseMatchTerm = "closeMatch";
 	public String selectTerm = "output";
 	
 	public String regexScope = "\\<(.*?)\\>";
